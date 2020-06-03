@@ -1,8 +1,17 @@
-function sayHello() {
-  return function () {
-    return "Hello World";
-  };
-}
+import store from "./store";
 
-let fn = sayHello();
-let message = fn();
+store.dispatch({
+  type: "bugAdded",
+  payload: {
+    description: "Bug1",
+  },
+});
+
+store.dispatch({
+  type: "bugRemoved",
+  payload: {
+    id: 1,
+  },
+});
+
+console.log(store.getState());
