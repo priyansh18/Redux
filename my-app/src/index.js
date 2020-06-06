@@ -8,6 +8,7 @@ import {
 } from "./store/bugs";
 import { projectAdded } from "./store/projects";
 import { userAdded } from "./store/users";
+import { apiCallBegan,apiCallFailed,apiCallSuccess } from "./store/api";
 
 const store = configureStore();
 
@@ -15,11 +16,12 @@ store.subscribe(() => {
   console.log("Store Changed");
 });
 store.dispatch(projectAdded({ name: "Project 1" }));
-store.dispatch({type:"apiCallBegan",payload:{
-  url:'/bugs',
-  onSuccess:"bugsReceived",
-  onError:"apiRequestFailed"
-}})
+store.dispatch(
+  apiCallBegan({
+    url: "/bugs",
+    onSuccess: "bugsReceived",
+  })
+);
 store.dispatch(userAdded({ name: "User 1" }));
 store.dispatch(userAdded({ name: "User 2" }));
 store.dispatch(bugAdded({ description: "Bug 1" }));
