@@ -15,7 +15,11 @@ store.subscribe(() => {
   console.log("Store Changed");
 });
 store.dispatch(projectAdded({ name: "Project 1" }));
-
+store.dispatch({type:"apiCallBegan",payload:{
+  url:'/bugs',
+  onSuccess:"bugsReceived",
+  onError:"apiRequestFailed"
+}})
 store.dispatch(userAdded({ name: "User 1" }));
 store.dispatch(userAdded({ name: "User 2" }));
 store.dispatch(bugAdded({ description: "Bug 1" }));
