@@ -5,6 +5,7 @@ import {
   getUnresolvedBugs,
   bugAssignToUser,
   getBugByUser,
+  loadBugs,resolveBugs
 } from "./store/bugs";
 import { projectAdded } from "./store/projects";
 import { userAdded } from "./store/users";
@@ -18,10 +19,11 @@ store.subscribe(() => {
 });
 
 
-store.dispatch(addBug({description:"a"}));
+store.dispatch(loadBugs());
 // store.dispatch(projectAdded({ name: "Project 1" }));
 // store.dispatch(userAdded({ name: "User 1" }));
 
+setTimeout(()=>store.dispatch(resolveBugs(1)),2000)
 
 
 
