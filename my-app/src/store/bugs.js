@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createSelector } from "reselect";
 import { apiCallBegan } from "./api";
+import moment from "moment";
 
 let lastId = 0;
 
@@ -9,7 +10,7 @@ const slice = createSlice({
   initialState: {
     list: [],
     loading: false,
-    lastfetch: null,
+    lastFetch: null,
   },
   reducers: {
     bugsRequested: (bugs, action) => {
@@ -18,11 +19,11 @@ const slice = createSlice({
     bugsRecieved: (bugs, action) => {
       bugs.list = action.payload;
       bugs.loading = false;
+      bugs.lastFetch = Date.now();
     },
 
-    bugsRequestFailed : (bugs,action) =>{
+    bugsRequestFailed: (bugs, action) => {
       bugs.loading = false;
-
     },
     bugAdded: (bugs, action) => {
       bugs.list.push({
@@ -43,18 +44,33 @@ const slice = createSlice({
   },
 });
 
-export const { bugAdded, bugResolved, bugAssignToUser,bugsRecieved,bugsRequested,bugsRequestFailed } = slice.actions;
+export const {
+  bugAdded,
+  bugResolved,
+  bugAssignToUser,
+  bugsRecieved,
+  bugsRequested,
+  bugsRequestFailed,
+} = slice.actions;
 export default slice.reducer;
 
 // Action Creators
 
-export const loadBugs = () =>
-  apiCallBegan({
-    url: "/bugs",
-    onStart:bugsRequested.type,
-    onSuccess: bugsRecieved.type,
-    onError:bugsRequestFailed.type
-  });
+export const loadBugs = () => (dispatch, getState) => {
+  const { lastFetch } = getState().entities.bugs;
+
+  const diffInMinutes = moment().diff(moment(lastFetch),'minutes');
+  if (diffInMinutes < 10) return;
+
+  dispatch(
+    apiCallBegan({
+      url: "/bugs",
+      onStart: bugsRequested.type,
+      onSuccess: bugsRecieved.type,
+      onError: bugsRequestFailed.type,
+    })
+  );
+};
 
 // //Selector
 

@@ -17,9 +17,15 @@ store.subscribe(() => {
   console.log("Store Changed");
 });
 
+
 store.dispatch(loadBugs());
 // store.dispatch(projectAdded({ name: "Project 1" }));
 // store.dispatch(userAdded({ name: "User 1" }));
+
+setTimeout(()=>store.dispatch(loadBugs()),2000)
+
+
+
 // store.dispatch(userAdded({ name: "User 2" }));
 // store.dispatch(bugAdded({ description: "Bug 1" }));
 // store.dispatch(bugAdded({ description: "Bug 2" }));
