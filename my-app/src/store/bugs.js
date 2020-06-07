@@ -3,7 +3,6 @@ import { createSelector } from "reselect";
 import { apiCallBegan } from "./api";
 import moment from "moment";
 
-let lastId = 0;
 
 const slice = createSlice({
   name: "bugs",
@@ -26,11 +25,7 @@ const slice = createSlice({
       bugs.loading = false;
     },
     bugAdded: (bugs, action) => {
-      bugs.list.push({
-        id: ++lastId,
-        description: action.payload.description,
-        resolved: false,
-      });
+      bugs.list.push(action.payload);
     },
     bugResolved: (bugs, action) => {
       const index = bugs.list.findIndex((bug) => bug.id === action.payload.id);
@@ -55,22 +50,30 @@ export const {
 export default slice.reducer;
 
 // Action Creators
+const url = "/bugs"; 
 
 export const loadBugs = () => (dispatch, getState) => {
   const { lastFetch } = getState().entities.bugs;
 
-  const diffInMinutes = moment().diff(moment(lastFetch),'minutes');
+  const diffInMinutes = moment().diff(moment(lastFetch), "minutes");
   if (diffInMinutes < 10) return;
 
   dispatch(
     apiCallBegan({
-      url: "/bugs",
+      url,
       onStart: bugsRequested.type,
       onSuccess: bugsRecieved.type,
       onError: bugsRequestFailed.type,
     })
   );
 };
+
+export const addBug = (bug) => apiCallBegan({
+  url,
+  method:"post",
+  data:bug,
+  onSuccess:bugAdded.type
+});
 
 // //Selector
 
